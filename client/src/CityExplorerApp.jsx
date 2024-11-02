@@ -293,14 +293,17 @@ const ExploreTab = () => {
         <Search className="absolute left-3 top-3 text-gray-400" size={20} />
       </div>
 
-      {/* Simplified Map View */}
+      {/* Simplified Map View with specific locations pinned */}
       <div className="rounded-lg overflow-hidden shadow-lg h-96">
-        <iframe
-          className="w-full h-full border-0"
-          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAafCA_cyy5BqxBmBiGaDFombVTgWWvoNk&center=44.4268,26.1025&zoom=13`}
-          allowFullScreen
-        ></iframe>
-      </div>
+  <iframe
+    className="w-full h-full border-0"
+    src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAafCA_cyy5BqxBmBiGaDFombVTgWWvoNk
+          &center=44.4396,26.0963
+          &zoom=13`}
+    allowFullScreen
+  ></iframe>
+</div>
+
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredLocations.map((location) => (
@@ -326,6 +329,7 @@ const ExploreTab = () => {
     </div>
   );
 };
+
 
 const LocationCard = ({ title, description, points, distance, completed }) => {
   return (
