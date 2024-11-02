@@ -110,7 +110,7 @@ const CityExplorerApp = () => {
               </button>
               
               {showAccountMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800" style={{width:'auto'}}>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800" style={{width:'300px'}}>
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="font-medium">{userData?.name || 'User'}</p>
                     <p className="text-sm text-gray-500">{userData?.email}</p>
@@ -293,17 +293,14 @@ const ExploreTab = () => {
         <Search className="absolute left-3 top-3 text-gray-400" size={20} />
       </div>
 
-      {/* Simplified Map View with specific locations pinned */}
+      {/* Simplified Map View */}
       <div className="rounded-lg overflow-hidden shadow-lg h-96">
-  <iframe
-    className="w-full h-full border-0"
-    src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAafCA_cyy5BqxBmBiGaDFombVTgWWvoNk
-          &center=44.4396,26.0963
-          &zoom=13`}
-    allowFullScreen
-  ></iframe>
-</div>
-
+        <iframe
+          className="w-full h-full border-0"
+          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAafCA_cyy5BqxBmBiGaDFombVTgWWvoNk&center=44.4268,26.1025&zoom=13`}
+          allowFullScreen
+        ></iframe>
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredLocations.map((location) => (
@@ -330,8 +327,9 @@ const ExploreTab = () => {
   );
 };
 
-
 const LocationCard = ({ title, description, points, distance, completed }) => {
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+
   return (
     <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
       <div className="flex justify-between items-start mb-2">
@@ -349,10 +347,51 @@ const LocationCard = ({ title, description, points, distance, completed }) => {
             Completat
           </span>
         ) : (
-          <button className="text-blue-600 text-sm hover:underline">
-            Vezi detalii
+          <button 
+            onClick={() => setShowVerificationModal(true)} 
+            className="text-blue-600 text-sm hover:underline"
+            style={{backgroundColor:'#dbeafe', padding:'5px', borderRadius:'5px', }}
+          >
+            Am ajuns aici
           </button>
         )}
+      </div>
+
+      {showVerificationModal && (
+        <LocationVerificationModal onClose={() => setShowVerificationModal(false)} />
+      )}
+    </div>
+  );
+};
+
+const LocationVerificationModal = ({ onClose }) => {
+  const [code, setCode] = useState('');
+
+  const handleSubmit = () => {
+    // Add validation logic for code here
+    console.log('Code submitted:', code);
+    onClose();  // Close the modal after submission
+  };
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+        <h2 className="text-lg font-semibold text-center mb-4">Introduceți Codul</h2>
+        <input
+          type="text"
+          placeholder="Cod"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          className="w-full p-3 border border-gray-300 rounded-lg mb-4"
+        />
+        <div className="flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded-lg text-gray-700">
+            Anulare
+          </button>
+          <button onClick={handleSubmit} className="px-4 py-2 bg-blue-600 text-white rounded-lg">
+            Trimite
+          </button>
+        </div>
       </div>
     </div>
   );
