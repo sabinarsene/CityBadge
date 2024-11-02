@@ -133,20 +133,6 @@ function LoginRegisterTabs() {
                             onChange={(e) => setPassword(e.target.value)} 
                         />
                         {error && <p className="error-message">{error}</p>} {/* Display error if present */}
-                        
-                        {/* Remember Me and Forgot Password in one row */}
-                        <div className="form-actions">
-                            <div className="remember-me-container">
-                                <input
-                                    type="checkbox"
-                                    id="rememberMe"
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                />
-                                <label htmlFor="rememberMe">Remember Me</label>
-                            </div>
-                            <a href="#">Forgot Your Password?</a>
-                        </div>
 
                         <button type="button" onClick={handleSignIn}>Sign In</button> {/* Handle sign in */}
                     </form>
