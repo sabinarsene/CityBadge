@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Navigation, Search, ChevronUp, Map, User, LogOut, Home } from 'lucide-react';
+import { Navigation, Search, ChevronUp, Map, User, LogOut, Home, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from './firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import pfp from './Components/pfp.png';
+import Chatbot from './Components/Chatbot';
 
 const CityExplorerApp = () => {
   const [activeTab, setActiveTab] = useState('explore');
@@ -10,6 +12,8 @@ const CityExplorerApp = () => {
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+  const [showChat, setShowChat] = useState(false);
+  const toggleChat = () => setShowChat(prev => !prev);
 
  
   useEffect(() => {
@@ -77,7 +81,7 @@ const CityExplorerApp = () => {
     <div className="min-h-screen bg-gray-100 pb-16">
       <header className="bg-blue-600 text-white p-4 shadow-lg fixed top-0 w-full z-10">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">City Explorer</h1>
+          <h1 className="text-2xl font-bold" onClick={() => navigate('/')}>CityBadge</h1>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2">
               <Map size={20} />
@@ -100,12 +104,13 @@ const CityExplorerApp = () => {
                     {userData.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  <User size={20} />
+                  // <User size={20} />
+                  <img src={pfp} alt="pfp" id='app-pfp'/>
                 )}
               </button>
               
               {showAccountMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800" style={{width:'auto'}}>
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="font-medium">{userData?.name || 'User'}</p>
                     <p className="text-sm text-gray-500">{userData?.email}</p>
@@ -142,15 +147,26 @@ const CityExplorerApp = () => {
         </div>
       </main>
 
-      {/* Scroll to Top Button */}
-      {showScrollTop && (
+        <div className="fixed bottom-20 right-4 flex flex-row gap-3" style={{bottom: '90px'}}>
+          {showScrollTop && (
+            <button
+            onClick={scrollToTop}
+            className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+            style={{ bottom: '130px', right: '60px' }}
+          >
+            <ChevronUp size={24} />
+          </button>
+          )}
+        
+        {/* Chat Button */}
         <button
-          onClick={scrollToTop}
-          className="fixed bottom-20 right-4 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+          onClick={toggleChat}
+          className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+          style={{ bottom: '130px', right: '160px' }}
         >
-          <ChevronUp size={24} />
+          <MessageCircle size={24} /> {/* Lucide-react icon for chat */}
         </button>
-      )}
+      </div>
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
@@ -180,6 +196,7 @@ const CityExplorerApp = () => {
           </button>
         </div>
       </nav>
+      {showChat && <Chatbot />}
     </div>
   );
 };
