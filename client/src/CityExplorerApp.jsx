@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Navigation, Search, ChevronUp, Map, User, LogOut, Home, MessageCircle } from 'lucide-react';
+import { Navigation, Search, ChevronUp, Map, User, LogOut, Home, MessageCircle, Star, Ticket, Leaf } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from './firebase';
 import { collection, query, where, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
@@ -11,12 +11,11 @@ const CityExplorerApp = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [favorites, setFavorites] = useState([]);
   const navigate = useNavigate();
   const [showChat, setShowChat] = useState(false);
   const toggleChat = () => setShowChat(prev => !prev);
-  const [code, setCode] = useState('');
-
- 
+  
   useEffect(() => {
     const loadUserData = () => {
       const userEmail = localStorage.getItem('userEmail');
@@ -31,6 +30,7 @@ const CityExplorerApp = () => {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0].data();
             setUserData(userDoc);
+            setFavorites(userDoc.favorites || []); // Load favorites from user data
           }
         });
   
@@ -65,6 +65,18 @@ const CityExplorerApp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const toggleFavorite = (placeId) => {
+    setFavorites((prevFavorites) => {
+      if (prevFavorites.includes(placeId)) {
+        // Remove from favorites
+        return prevFavorites.filter(id => id !== placeId);
+      } else {
+        // Add to favorites
+        return [...prevFavorites, placeId];
+      }
+    });
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (!event.target.closest('.account-menu')) {
@@ -84,7 +96,7 @@ const CityExplorerApp = () => {
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2">
               <Map size={20} />
-              <span className="font-medium">12 Places</span>
+              <span className="font-medium">24 Places</span>
             </span>
             <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
               {userData?.punctaj || 0} Points
@@ -103,7 +115,6 @@ const CityExplorerApp = () => {
                     {userData.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  // <User size={20} />
                   <img src={pfp} alt="pfp" id='app-pfp'/>
                 )}
               </button>
@@ -139,23 +150,23 @@ const CityExplorerApp = () => {
         {/* Content Area */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           {activeTab === 'explore' ? (
-            <ExploreTab />
+            <ExploreTab toggleFavorite={toggleFavorite} favorites={favorites} />
           ) : (
             <AchievementsTab />
           )}
         </div>
       </main>
 
-        <div className="fixed bottom-20 right-4 flex flex-row gap-3" style={{bottom: '90px'}}>
-          {showScrollTop && (
-            <button
+      <div className="fixed bottom-20 right-4 flex flex-row gap-3" style={{bottom: '90px'}}>
+        {showScrollTop && (
+          <button
             onClick={scrollToTop}
             className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
             style={{ bottom: '130px', right: '60px' }}
           >
             <ChevronUp size={24} />
           </button>
-          )}
+        )}
         
         {/* Chat Button */}
         <button
@@ -170,7 +181,7 @@ const CityExplorerApp = () => {
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <div className="container mx-auto flex justify-center gap-12">
-        <button 
+          <button 
             onClick={handleHomeClick}
             className="flex flex-col items-center text-gray-600"
           >
@@ -192,6 +203,15 @@ const CityExplorerApp = () => {
           >
             <Search size={24} />
             <span className="text-sm mt-1">Realizări</span>
+          </button>
+
+          {/* Favorites Button */}
+          <button 
+            onClick={() => navigate('/favorites')} // Navigate to the favorites page
+            className="flex flex-col items-center text-gray-600"
+          >
+            <Star size={24} />
+            <span className="text-sm mt-1">Favorites</span>
           </button>
         </div>
       </nav>
@@ -463,22 +483,40 @@ const ExploreTab = () => {
   );
 };
 
-const LocationCard = ({ id, title, description, points, distance, completed, onComplete }) => {
+const LocationCard = ({ id, title, description, points, distance, completed, onComplete, isFavorite, onToggleFavorite }) => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); // Noua stare pentru popup
+  const [showPopup, setShowPopup] = useState(false); // State for popup
 
   return (
     <div>
       <div
         className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
-        onClick={() => setShowPopup(true)} // Afișează popup-ul când cardul este apăsat
+        onClick={() => setShowPopup(true)} // Show popup when card is clicked
       >
-        <div className="flex justify-between items-start mb-2">
+        <div className="flex justify-between items-center mb-2"> {/* Use items-center for better alignment */}
           <h3 className="font-medium text-lg">{title}</h3>
-          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
-            {points} puncte
-          </span>
+  
+          <div className="flex items-center"> {/* Container for points and favorite icon */}
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm mr-2"> {/* Margin for spacing */}
+              {points} puncte
+            </span>
+  
+            <button 
+              onClick={(e) => {
+                e.stopPropagation(); // Prevent popup from showing when clicking the favorite button
+                onToggleFavorite(id); // Toggle favorite status
+              }}
+              className="focus:outline-none"
+            >
+              {isFavorite ? (
+                <Star size={24} className="text-yellow-500" /> // Use the filled star
+              ) : (
+                <Star size={24} className="text-gray-400" style={{ fill: 'none', stroke: 'currentColor' }} /> // Outline style
+              )}
+            </button>
+          </div>
         </div>
+  
         <p className="text-gray-600 text-sm mb-3">{description}</p>
         <div className="flex justify-between items-center">
           <span className="text-sm text-gray-500">La {distance}</span>
@@ -490,19 +528,19 @@ const LocationCard = ({ id, title, description, points, distance, completed, onC
           ) : (
             <button 
               onClick={(e) => {
-                e.stopPropagation(); // Previi afișarea popup-ului pe click
+                e.stopPropagation(); // Prevent popup from showing on click
                 setShowVerificationModal(true);
               }}
               className="text-blue-600 text-sm hover:underline"
-              style={{backgroundColor:'#dbeafe', padding:'5px', borderRadius:'5px', }}
+              style={{ backgroundColor: '#dbeafe', padding: '5px', borderRadius: '5px' }}
             >
               Am ajuns aici
             </button>
           )}
         </div>
       </div>
-
-      {/* Popup-ul cu descrierea locației */}
+  
+      {/* Popup for location description */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
@@ -517,7 +555,7 @@ const LocationCard = ({ id, title, description, points, distance, completed, onC
           </div>
         </div>
       )}
-
+  
       {showVerificationModal && (
         <LocationVerificationModal 
           onClose={() => setShowVerificationModal(false)} 
@@ -527,6 +565,7 @@ const LocationCard = ({ id, title, description, points, distance, completed, onC
       )}
     </div>
   );
+  
 };
 
 
@@ -586,29 +625,62 @@ const LocationVerificationModal = ({ onClose, onComplete, locationId }) => {
 };
 
 
+
 const AchievementsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [achievements] = useState([
+  const [showModal, setShowModal] = useState(false);
+  const [selectedAchievement, setSelectedAchievement] = useState(null);
+
+  const achievements = [
     {
       id: 1,
       title: "Explorator Cultural",
       description: "Vizitează 5 muzee",
       progress: 3,
-      total: 5
+      total: 5,
+      coupons: [
+        { store: 'Muzeul Național', discount: '10% reducere la intrare', icon: <Ticket size={16} className="text-blue-600" /> },
+        { store: 'Galeria de Artă', discount: '15% reducere la suveniruri', icon: <Star size={16} className="text-yellow-500" /> },
+      ]
     },
     {
       id: 2,
       title: "Iubitor de Natură",
       description: "Explorează 10 parcuri",
       progress: 8,
-      total: 10
-    }
-  ]);
+      total: 10,
+      coupons: [
+        { store: 'Parcul Central', discount: '20% reducere la închirierea bicicletelor', icon: <Leaf size={16} className="text-green-600" /> },
+        { store: 'Grădina Botanică', discount: '5% reducere la biletele de intrare', icon: <Ticket size={16} className="text-blue-600" /> },
+      ]
+    },
+    {
+      id: 3,
+      title: "Gastronom Deluxe",
+      description: "Savurează 10 feluri de mâncare din restaurante locale",
+      progress: 5,
+      total: 10,
+      coupons: [
+        { store: 'Restaurantul Gourmet', discount: '25% reducere la prânz', icon: <Star size={16} className="text-yellow-500" /> },
+        { store: 'Bistro Local', discount: '10% reducere la cină', icon: <Ticket size={16} className="text-blue-600" /> },
+      ]
+    } // New achievement
+  ];
 
   const filteredAchievements = achievements.filter(achievement =>
     achievement.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     achievement.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleAchievementClick = (achievement) => {
+    setSelectedAchievement(achievement);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedAchievement(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -625,18 +697,29 @@ const AchievementsTab = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {filteredAchievements.map((achievement) => (
-          <AchievementCard key={achievement.id} {...achievement} />
+          <AchievementCard 
+            key={achievement.id} 
+            {...achievement} 
+            onClick={() => handleAchievementClick(achievement)}
+          />
         ))}
       </div>
+
+      {showModal && selectedAchievement && (
+        <RewardModal 
+          achievement={selectedAchievement} 
+          onClose={closeModal} 
+        />
+      )}
     </div>
   );
 };
 
-const AchievementCard = ({ title, description, progress, total }) => {
+const AchievementCard = ({ title, description, progress, total, onClick }) => {
   const percentage = (progress / total) * 100;
-  
+
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
+    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition cursor-pointer" onClick={onClick}>
       <div className="w-16 h-16 bg-blue-100 rounded-full mx-auto mb-3 flex items-center justify-center">
         <span className="text-blue-600 text-xl font-bold">
           {progress}/{total}
@@ -649,6 +732,31 @@ const AchievementCard = ({ title, description, progress, total }) => {
           className="bg-blue-600 rounded-full h-2 transition-all duration-300"
           style={{ width: `${percentage}%` }}
         ></div>
+      </div>
+    </div>
+  );
+};
+
+const RewardModal = ({ achievement, onClose }) => {
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-lg p-6 max-w-sm w-full">
+        <h3 className="text-xl font-semibold">{achievement.title}</h3>
+        <p className="mt-2">{achievement.description}</p>
+        <h4 className="mt-4 font-medium">Cupoane disponibile:</h4>
+        <ul className="mt-2 space-y-1">
+          {achievement.coupons.map((coupon, index) => (
+            <li key={index} className="flex items-center text-gray-600">
+              {coupon.icon} {/* Icon displayed here */}
+              <span className="ml-2">{coupon.store}: {coupon.discount}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-4 flex justify-end">
+          <button onClick={onClose} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            Închide
+          </button>
+        </div>
       </div>
     </div>
   );

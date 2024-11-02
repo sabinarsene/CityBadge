@@ -1,0 +1,136 @@
+{
+    "locations": [
+      {
+        "id": 1,
+        "nume": "Palatul Parlamentului",
+        "lat": 44.4273,
+        "lng": 26.0875,
+        "description": "Cea mai mare clădire civilă din lume și sediul Parlamentului României",
+        "points": 150,
+        "distance": "0 km",
+        "completed": false,
+        "image": "palatul-parlamentului.jpg"
+      },
+      {
+        "id": 2,
+        "nume": "Ateneul Roman",
+        "lat": 44.4412,
+        "lng": 26.0963,
+        "description": "Sală de concerte emblematică și un reper cultural important al Bucureștiului",
+        "points": 100,
+        "distance": "0 km",
+        "completed": false,
+        "image": "ateneul-roman.jpg"
+      },
+      {
+        "id": 3,
+        "nume": "Muzeul Național de Artă al României",
+        "lat": 44.4396,
+        "lng": 26.0965,
+        "description": "Găzduiește o colecție impresionantă de artă românească și europeană",
+        "points": 120,
+        "distance": "0 km",
+        "completed": false,
+        "image": "muzeul-national-arta.jpg"
+      },
+      {
+        "id": 4,
+        "nume": "Grădina Botanică",
+        "lat": 44.4330,
+        "lng": 26.0688,
+        "description": "Oază verde cu mii de specii de plante și sere spectaculoase",
+        "points": 80,
+        "distance": "0 km",
+        "completed": false,
+        "image": "gradina-botanica.jpg"
+      },
+      {
+        "id": 5,
+        "nume": "Casa Ceaușescu",
+        "lat": 44.4665,
+        "lng": 26.1039,
+        "description": "Fostă reședință a familiei Ceaușescu, acum muzeu",
+        "points": 100,
+        "distance": "0 km",
+        "completed": false,
+        "image": "casa-ceausescu.jpg"
+      },
+      {
+        "id": 6,
+        "nume": "Arcul de Triumf",
+        "lat": 44.4672,
+        "lng": 26.0781,
+        "description": "Monument istoric dedicat victoriei în Primul Război Mondial",
+        "points": 90,
+        "distance": "0 km",
+        "completed": false,
+        "image": "arcul-de-triumf.jpg"
+      },
+      {
+        "id": 7,
+        "nume": "Parcul Herăstrău",
+        "lat": 44.4706,
+        "lng": 26.0784,
+        "description": "Cel mai mare parc din București, perfect pentru plimbări și activități în aer liber",
+        "points": 70,
+        "distance": "0 km",
+        "completed": false,
+        "image": "parcul-herastrau.jpg"
+      },
+      {
+        "id": 8,
+        "nume": "Muzeul Satului",
+        "lat": 44.4722,
+        "lng": 26.0744,
+        "description": "Muzeu în aer liber ce prezintă arhitectura tradițională românească",
+        "points": 110,
+        "distance": "0 km",
+        "completed": false,
+        "image": "muzeul-satului.jpg"
+      },
+      {
+        "id": 9,
+        "nume": "Cișmigiu",
+        "lat": 44.4353,
+        "lng": 26.0894,
+        "description": "Cel mai vechi parc public din București, cu grădini frumoase și lac",
+        "points": 60,
+        "distance": "0 km",
+        "completed": false,
+        "image": "cismigiu.jpg"
+      },
+      {
+        "id": 10,
+        "nume": "Centrul Vechi",
+        "lat": 44.4323,
+        "lng": 26.1012,
+        "description": "Zona istorică a Bucureștiului, cu străzi pietonale și arhitectură deosebită",
+        "points": 130,
+        "distance": "0 km",
+        "completed": false,
+        "image": "centrul-vechi.jpg"
+      },
+      {
+        "id": 11,
+        "nume": "Biserica Stavropoleos",
+        "lat": 44.4314,
+        "lng": 26.0986,
+        "description": "Biserică în stil brâncovenesc cu o arhitectură unică",
+        "points": 85,
+        "distance": "0 km",
+        "completed": false,
+        "image": "biserica-stavropoleos.jpg"
+      },
+      {
+        "id": 12,
+        "nume": "Muzeul George Enescu",
+        "lat": 44.4397,
+        "lng": 26.0977,
+        "description": "Dedicat marelui compozitor român, găzduit într-un palat Art Nouveau",
+        "points": 95,
+        "distance": "0 km",
+        "completed": false,
+        "image": "muzeul-enescu.jpg"
+      }
+    ]
+  }

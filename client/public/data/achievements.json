@@ -1,0 +1,17 @@
+[
+    {
+      "id": 1,
+      "title": "Explorator Cultural",
+      "description": "Vizitează 5 muzee",
+      "progress": 3,
+      "total": 5
+    },
+    {
+      "id": 2,
+      "title": "Iubitor de Natură",
+      "description": "Explorează 10 parcuri",
+      "progress": 8,
+      "total": 10
+    }
+  ]
+  
