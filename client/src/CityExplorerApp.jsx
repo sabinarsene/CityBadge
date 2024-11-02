@@ -27,6 +27,7 @@ const CityExplorerApp = () => {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0].data();
             setUserData(userDoc);
+            console.log("User data loaded:", userDoc); // Add this line to check
           }
         } else {
           navigate('/app');
@@ -36,9 +37,10 @@ const CityExplorerApp = () => {
         navigate('/');
       }
     };
-
+  
     loadUserData();
   }, [navigate]);
+  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -79,55 +81,56 @@ const CityExplorerApp = () => {
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">City Explorer</h1>
           <div className="flex items-center gap-4">
-            <span className="flex items-center gap-2">
-              <Map size={20} />
-              <span className="font-medium">12 Places</span>
-            </span>
-            <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
-              {userData?.punctaj || 0} Points
-            </span>
-            {/* Account Menu */}
-            <div className="relative account-menu">
-              <button 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setShowAccountMenu(!showAccountMenu);
-                }}
-                className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors"
-              >
-                {userData?.name ? (
-                  <span className="text-sm font-medium">
-                    {userData.name.charAt(0).toUpperCase()}
-                  </span>
-                ) : (
-                  <User size={20} />
-                )}
-              </button>
-              
-              {showAccountMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
-                  <div className="px-4 py-2 border-b border-gray-100">
-                    <p className="font-medium">{userData?.name || 'User'}</p>
-                    <p className="text-sm text-gray-500">{userData?.email}</p>
-                    <p className="text-sm font-medium text-blue-600 mt-1">
-                      {userData?.punctaj || 0} puncte
-                    </p>
-                  </div>
-                  <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100">
-                    <User size={18} />
-                    <span>Contul meu</span>
-                  </button>
-                  <button 
-                    onClick={handleLogout}
-                    className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 text-red-600"
-                  >
-                    <LogOut size={18} />
-                    <span>Deconectare</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
+  <span className="flex items-center gap-2">
+    <Map size={20} />
+    <span className="font-medium">12 Places</span>
+  </span>
+  <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
+    {userData ? `${userData.punctaj} Points` : "0 Points"}
+  </span>
+  {/* Account Menu */}
+  <div className="relative account-menu">
+    <button 
+      onClick={(e) => {
+        e.stopPropagation();
+        setShowAccountMenu(!showAccountMenu);
+      }}
+      className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors"
+    >
+      {userData?.name ? (
+        <span className="text-sm font-medium">
+          {userData.name.charAt(0).toUpperCase()}
+        </span>
+      ) : (
+        <User size={20} />
+      )}
+    </button>
+    
+    {showAccountMenu && (
+      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
+        <div className="px-4 py-2 border-b border-gray-100">
+          <p className="font-medium">{userData?.name || 'User'}</p>
+          <p className="text-sm text-gray-500">{userData?.email}</p>
+          <p className="text-sm font-medium text-blue-600 mt-1">
+            {userData?.punctaj || 0} puncte
+          </p>
+        </div>
+        <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100">
+          <User size={18} />
+          <span>Contul meu</span>
+        </button>
+        <button 
+          onClick={handleLogout}
+          className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 text-red-600"
+        >
+          <LogOut size={18} />
+          <span>Deconectare</span>
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
         </div>
       </header>
 

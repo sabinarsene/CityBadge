@@ -35,11 +35,11 @@ const LoginRegisterTabs = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!validateForm()) return;
-
+  
     if (isLogin) {
-      // Logare
+      // Login
       try {
         const userQuery = query(
           collection(db, 'users'),
@@ -47,9 +47,11 @@ const LoginRegisterTabs = () => {
           where('password', '==', formData.password)
         );
         const querySnapshot = await getDocs(userQuery);
-
+  
         if (!querySnapshot.empty) {
-          navigate('/app'); // Redirecționare la CityExplorerApp după autentificare reușită
+          // Save email to localStorage on successful login
+          localStorage.setItem('userEmail', formData.email);
+          navigate('/app'); // Redirect to CityExplorerApp after successful login
         } else {
           setError('Emailul sau parola sunt incorecte.');
         }
@@ -58,17 +60,17 @@ const LoginRegisterTabs = () => {
         setError('A apărut o eroare la autentificare.');
       }
     } else {
-      // Înregistrare
+      // Registration
       try {
         await addDoc(collection(db, 'users'), {
           email: formData.email,
           password: formData.password,
           name: formData.name,
-          punctaj: 0 // Inițializare punctaj la 0
+          punctaj: 0 // Initialize points to 0
         });
         console.log('User added to Firestore:', formData);
-        
-        // După înregistrare reușită, comută la ecranul de logare
+  
+        // Switch to login screen after successful registration
         setIsLogin(true);
       } catch (error) {
         console.error('Error adding user to Firestore:', error);
@@ -76,6 +78,7 @@ const LoginRegisterTabs = () => {
       }
     }
   };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
