@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navigation, Search, ChevronUp, Map, User, LogOut, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { db } from './firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const CityExplorerApp = () => {
   const [activeTab, setActiveTab] = useState('explore');
@@ -11,42 +9,17 @@ const CityExplorerApp = () => {
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
- 
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const userEmail = localStorage.getItem('userEmail');
-        
-        if (userEmail) {
-          const userQuery = query(
-            collection(db, 'users'),
-            where('email', '==', userEmail)
-          );
-          
-          const querySnapshot = await getDocs(userQuery);
-          if (!querySnapshot.empty) {
-            const userDoc = querySnapshot.docs[0].data();
-            setUserData(userDoc);
-            console.log("User data loaded:", userDoc); // Add this line to check
-          }
-        } else {
-          navigate('/app');
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        navigate('/');
-      }
-    };
-  
-    loadUserData();
+    const userEmail = localStorage.getItem('userEmail');
+    if (!userEmail) {
+      navigate('/app');
+    }
   }, [navigate]);
-  
 
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
     };
-    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -64,78 +37,63 @@ const CityExplorerApp = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (!event.target.closest('.account-menu')) {
-        setShowAccountMenu(false);
-      }
-    };
-
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, []);
-
   return (
     <div className="min-h-screen bg-gray-100 pb-16">
       <header className="bg-blue-600 text-white p-4 shadow-lg fixed top-0 w-full z-10">
         <div className="container mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">City Explorer</h1>
           <div className="flex items-center gap-4">
-  <span className="flex items-center gap-2">
-    <Map size={20} />
-    <span className="font-medium">12 Places</span>
-  </span>
-  <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
-    {userData ? `${userData.punctaj} Points` : "0 Points"}
-  </span>
-  {/* Account Menu */}
-  <div className="relative account-menu">
-    <button 
-      onClick={(e) => {
-        e.stopPropagation();
-        setShowAccountMenu(!showAccountMenu);
-      }}
-      className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors"
-    >
-      {userData?.name ? (
-        <span className="text-sm font-medium">
-          {userData.name.charAt(0).toUpperCase()}
-        </span>
-      ) : (
-        <User size={20} />
-      )}
-    </button>
-    
-    {showAccountMenu && (
-      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
-        <div className="px-4 py-2 border-b border-gray-100">
-          <p className="font-medium">{userData?.name || 'User'}</p>
-          <p className="text-sm text-gray-500">{userData?.email}</p>
-          <p className="text-sm font-medium text-blue-600 mt-1">
-            {userData?.punctaj || 0} puncte
-          </p>
-        </div>
-        <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100">
-          <User size={18} />
-          <span>Contul meu</span>
-        </button>
-        <button 
-          onClick={handleLogout}
-          className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 text-red-600"
-        >
-          <LogOut size={18} />
-          <span>Deconectare</span>
-        </button>
-      </div>
-    )}
-  </div>
-</div>
-
+            <span className="flex items-center gap-2">
+              <Map size={20} />
+              <span className="font-medium">12 Places</span>
+            </span>
+            <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
+              {userData ? `${userData.punctaj} Points` : "0 Points"}
+            </span>
+            <div className="relative account-menu">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowAccountMenu(!showAccountMenu);
+                }}
+                className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors"
+              >
+                {userData?.name ? (
+                  <span className="text-sm font-medium">
+                    {userData.name.charAt(0).toUpperCase()}
+                  </span>
+                ) : (
+                  <User size={20} />
+                )}
+              </button>
+              {showAccountMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="font-medium">{userData?.name || 'User'}</p>
+                    <p className="text-sm text-gray-500">{userData?.email}</p>
+                    <p className="text-sm font-medium text-blue-600 mt-1">
+                      {userData?.punctaj || 0} puncte
+                    </p>
+                  </div>
+                  <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100">
+                    <User size={18} />
+                    <span>Contul meu</span>
+                  </button>
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 text-red-600"
+                  >
+                    <LogOut size={18} />
+                    <span>Deconectare</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </header>
 
       <main className="container mx-auto p-4 mt-20">
-        {/* Content Area */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           {activeTab === 'explore' ? (
             <ExploreTab />
@@ -145,7 +103,6 @@ const CityExplorerApp = () => {
         </div>
       </main>
 
-      {/* Scroll to Top Button */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
@@ -155,17 +112,12 @@ const CityExplorerApp = () => {
         </button>
       )}
 
-      {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <div className="container mx-auto flex justify-center gap-12">
-        <button 
-            onClick={handleHomeClick}
-            className="flex flex-col items-center text-gray-600"
-          >
+          <button onClick={handleHomeClick} className="flex flex-col items-center text-gray-600">
             <Home size={24} />
             <span className="text-sm mt-1">Home</span>
           </button>
-          
           <button 
             onClick={() => setActiveTab('explore')}
             className={`flex flex-col items-center ${activeTab === 'explore' ? 'text-blue-600' : 'text-gray-600'}`}
@@ -173,7 +125,6 @@ const CityExplorerApp = () => {
             <Navigation size={24} />
             <span className="text-sm mt-1">Explorează</span>
           </button>
-
           <button 
             onClick={() => setActiveTab('achievements')}
             className={`flex flex-col items-center ${activeTab === 'achievements' ? 'text-blue-600' : 'text-gray-600'}`}
@@ -189,82 +140,153 @@ const CityExplorerApp = () => {
 
 const ExploreTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null); // New state for modal
   const [locations, setLocations] = useState([
     {
-      id: 1,
-      title: "Muzeul Național de Artă",
-      description: "Descoperă capodopere ale artei românești și universale",
-      points: 100,
-      distance: "1.2 km",
-      completed: false,
-      lat: 44.4396,
-      lng: 26.0963
+      "id": 1,
+      "nume": "Palatul Parlamentului",
+      "lat": 44.4273,
+      "lng": 26.0875,
+      "description": "Cea mai mare clădire civilă din lume și sediul Parlamentului României",
+      "points": 150,
+      "distance": "0 km",
+      "completed": false,
+      "image": "palatul-parlamentului.jpg"
     },
     {
-      id: 2,
-      title: "Parcul Herăstrău",
-      description: "Cel mai mare parc din București",
-      points: 50,
-      distance: "2.5 km",
-      completed: true,
-      lat: 44.4706,
-      lng: 26.0784
+      "id": 2,
+      "nume": "Ateneul Roman",
+      "lat": 44.4412,
+      "lng": 26.0963,
+      "description": "Sală de concerte emblematică și un reper cultural important al Bucureștiului",
+      "points": 100,
+      "distance": "0 km",
+      "completed": false,
+      "image": "ateneul-roman.jpg"
+    },
+    {
+      "id": 3,
+      "nume": "Muzeul Național de Artă al României",
+      "lat": 44.4396,
+      "lng": 26.0965,
+      "description": "Găzduiește o colecție impresionantă de artă românească și europeană",
+      "points": 120,
+      "distance": "0 km",
+      "completed": false,
+      "image": "muzeul-national-arta.jpg"
+    },
+    {
+      "id": 4,
+      "nume": "Grădina Botanică",
+      "lat": 44.4330,
+      "lng": 26.0688,
+      "description": "Oază verde cu mii de specii de plante și sere spectaculoase",
+      "points": 80,
+      "distance": "0 km",
+      "completed": false,
+      "image": "gradina-botanica.jpg"
+    },
+    {
+      "id": 5,
+      "nume": "Casa Ceaușescu",
+      "lat": 44.4665,
+      "lng": 26.1039,
+      "description": "Fostă reședință a familiei Ceaușescu, acum muzeu",
+      "points": 100,
+      "distance": "0 km",
+      "completed": false,
+      "image": "casa-ceausescu.jpg"
+    },
+    {
+      "id": 6,
+      "nume": "Arcul de Triumf",
+      "lat": 44.4672,
+      "lng": 26.0781,
+      "description": "Monument istoric dedicat victoriei în Primul Război Mondial",
+      "points": 90,
+      "distance": "0 km",
+      "completed": false,
+      "image": "arcul-de-triumf.jpg"
+    },
+    {
+      "id": 7,
+      "nume": "Parcul Herăstrău",
+      "lat": 44.4706,
+      "lng": 26.0784,
+      "description": "Cel mai mare parc din București, perfect pentru plimbări și activități în aer liber",
+      "points": 70,
+      "distance": "0 km",
+      "completed": false,
+      "image": "parcul-herastrau.jpg"
+    },
+    {
+      "id": 8,
+      "nume": "Muzeul Satului",
+      "lat": 44.4722,
+      "lng": 26.0744,
+      "description": "Muzeu în aer liber ce prezintă arhitectura tradițională românească",
+      "points": 110,
+      "distance": "0 km",
+      "completed": false,
+      "image": "muzeul-satului.jpg"
+    },
+    {
+      "id": 9,
+      "nume": "Cișmigiu",
+      "lat": 44.4353,
+      "lng": 26.0894,
+      "description": "Cel mai vechi parc public din București, cu grădini frumoase și lac",
+      "points": 60,
+      "distance": "0 km",
+      "completed": false,
+      "image": "cismigiu.jpg"
+    },
+    {
+      "id": 10,
+      "nume": "Centrul Vechi",
+      "lat": 44.4323,
+      "lng": 26.1012,
+      "description": "Zona istorică a Bucureștiului, cu străzi pietonale și arhitectură deosebită",
+      "points": 130,
+      "distance": "0 km",
+      "completed": false,
+      "image": "centrul-vechi.jpg"
+    },
+    {
+      "id": 11,
+      "nume": "Biserica Stavropoleos",
+      "lat": 44.4314,
+      "lng": 26.0986,
+      "description": "Biserică în stil brâncovenesc cu o arhitectură unică",
+      "points": 85,
+      "distance": "0 km",
+      "completed": false,
+      "image": "biserica-stavropoleos.jpg"
+    },
+    {
+      "id": 12,
+      "nume": "Muzeul George Enescu",
+      "lat": 44.4397,
+      "lng": 26.0977,
+      "description": "Dedicat marelui compozitor român, găzduit într-un palat Art Nouveau",
+      "points": 95,
+      "distance": "0 km",
+      "completed": false,
+      "image": "muzeul-enescu.jpg"
     }
   ]);
+  
 
   const observerTarget = useRef(null);
   const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting && hasMore && !loading) {
-          loadMore();
-        }
-      },
-      { threshold: 1.0 }
-    );
-
-    if (observerTarget.current) {
-      observer.observe(observerTarget.current);
-    }
-
-    return () => {
-      if (observerTarget.current) {
-        observer.unobserve(observerTarget.current);
-      }
-    };
-  }, [hasMore, loading]);
-
-  const loadMore = () => {
-    setLoading(true);
-    setTimeout(() => {
-      const newLocations = [...locations];
-      for (let i = 0; i < 5; i++) {
-        newLocations.push({
-          id: locations.length + i + 1,
-          title: `Locație ${locations.length + i + 1}`,
-          description: "Descriere locație nouă",
-          points: Math.floor(Math.random() * 100) + 50,
-          distance: `${(Math.random() * 5).toFixed(1)} km`,
-          completed: Math.random() > 0.5,
-          lat: 44.4268 + (Math.random() - 0.5) * 0.1,
-          lng: 26.1025 + (Math.random() - 0.5) * 0.1
-        });
-      }
-      setLocations(newLocations);
-      setLoading(false);
-      if (newLocations.length >= 20) {
-        setHasMore(false);
-      }
-    }, 1000);
-  };
+ 
 
   const filteredLocations = locations.filter(location =>
-    location.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    location.nume.toLowerCase().includes(searchTerm.toLowerCase()) ||
     location.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  
 
   return (
     <div className="space-y-6">
@@ -313,11 +335,11 @@ const ExploreTab = () => {
   );
 };
 
-const LocationCard = ({ title, description, points, distance, completed }) => {
+const LocationCard = ({ nume, description, points, distance, completed }) => {
   return (
     <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
       <div className="flex justify-between items-start mb-2">
-        <h3 className="font-medium text-lg">{title}</h3>
+        <h3 className="font-medium text-lg">{nume}</h3>
         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
           {points} puncte
         </span>
