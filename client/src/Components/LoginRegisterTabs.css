@@ -1,0 +1,160 @@
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .auth-container {
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  .form-input {
+    @apply w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-lg 
+           focus:outline-none focus:border-blue-500 transition-colors;
+  }
+  
+  .form-input:focus {
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+  }
+  
+  .submit-button {
+    @apply relative overflow-hidden;
+  }
+  
+  .submit-button::after {
+    content: '';
+    @apply absolute inset-0 bg-white opacity-0 transition-opacity duration-300;
+  }
+  
+  .submit-button:hover::after {
+    opacity: 0.1;
+  }
+  
+  /* Hover effects for social buttons */
+  .social-button {
+    @apply transition-all duration-300;
+  }
+  
+  .social-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Input icon animations */
+  .input-icon {
+    @apply transition-colors duration-300;
+  }
+  
+  .form-input:focus + .input-icon {
+    @apply text-blue-500;
+  }
+  
+  /* Error states */
+  .input-error {
+    @apply border-red-500 bg-red-50;
+  }
+  
+  .error-message {
+    @apply text-red-500 text-sm mt-1 ml-1;
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  /* Loading state */
+  .loading {
+    @apply relative opacity-75 cursor-wait;
+  }
+  
+  .loading::after {
+    content: '';
+    @apply absolute inset-0 bg-white opacity-25;
+  }
+  
+  /* Success animation */
+  @keyframes checkmark {
+    0% {
+      transform: scale(0);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .success-checkmark {
+    animation: checkmark 0.5s ease-out forwards;
+  }
+  
+  /* Custom checkbox styles */
+  .custom-checkbox {
+    @apply relative flex items-center;
+  }
+  
+  .custom-checkbox input {
+    @apply absolute opacity-0 w-0 h-0;
+  }
+  
+  .custom-checkbox .checkmark {
+    @apply w-5 h-5 bg-gray-100 rounded border border-gray-300 
+           transition-all duration-200 flex items-center justify-center;
+  }
+  
+  .custom-checkbox input:checked + .checkmark {
+    @apply bg-blue-600 border-blue-600;
+  }
+  
+  .custom-checkbox .checkmark::after {
+    content: '';
+    @apply absolute w-2 h-2 bg-white rounded-full scale-0 transition-transform duration-200;
+  }
+  
+  .custom-checkbox input:checked + .checkmark::after {
+    @apply scale-100;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    .auth-container {
+      @apply px-4;
+    }
+    
+    .form-card {
+      @apply rounded-xl shadow-lg;
+    }
+  }
+  
+  /* Dark mode support */
+  @media (prefers-color-scheme: dark) {
+    .auth-container {
+      @apply bg-gray-900;
+    }
+    
+    .form-card {
+      @apply bg-gray-800 border-gray-700;
+    }
+    
+    .form-input {
+      @apply bg-gray-700 border-gray-600 text-white;
+    }
+    
+    .social-button {
+      @apply border-gray-600 bg-gray-700;
+    }
+  }
