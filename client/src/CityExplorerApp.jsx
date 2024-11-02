@@ -206,25 +206,150 @@ const ExploreTab = () => {
   const [locations, setLocations] = useState([
     {
       id: 1,
-      title: "Muzeul Național de Artă",
-      description: "Descoperă capodopere ale artei românești și universale",
-      points: 100,
-      distance: "1.2 km",
+      title: "Palatul Parlamentului",
+      description: "Cea mai mare clădire civilă din lume și sediul Parlamentului României",
+      points: 150,
+      distance: "0 km",
       completed: false,
-      lat: 44.4396,
-      lng: 26.0963
+      lat: 44.4273,
+      lng: 26.0875,
+      image: "palatul-parlamentului.jpg",
+      category: "Clădire"
     },
     {
       id: 2,
+      title: "Ateneul Roman",
+      description: "Sală de concerte emblematică și un reper cultural important al Bucureștiului",
+      points: 100,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4412,
+      lng: 26.0963,
+      image: "ateneul-roman.jpg",
+      category: "Clădire"
+    },
+    {
+      id: 3,
+      title: "Muzeul Național de Artă al României",
+      description: "Găzduiește o colecție impresionantă de artă românească și europeană",
+      points: 120,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4396,
+      lng: 26.0965,
+      image: "muzeul-national-arta.jpg",
+      category: "Muzeu"
+    },
+    {
+      id: 4,
+      title: "Grădina Botanică",
+      description: "Oază verde cu mii de specii de plante și sere spectaculoase",
+      points: 80,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4330,
+      lng: 26.0688,
+      image: "gradina-botanica.jpg",
+      category: "Parc"
+    },
+    {
+      id: 5,
+      title: "Casa Ceaușescu",
+      description: "Fostă reședință a familiei Ceaușescu, acum muzeu",
+      points: 100,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4665,
+      lng: 26.1039,
+      image: "casa-ceausescu.jpg",
+      category: "Muzeu"
+    },
+    {
+      id: 6,
+      title: "Arcul de Triumf",
+      description: "Monument istoric dedicat victoriei în Primul Război Mondial",
+      points: 90,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4672,
+      lng: 26.0781,
+      image: "arcul-de-triumf.jpg",
+      category: "Clădire"
+    },
+    {
+      id: 7,
       title: "Parcul Herăstrău",
-      description: "Cel mai mare parc din București",
-      points: 50,
-      distance: "2.5 km",
-      completed: true,
+      description: "Cel mai mare parc din București, perfect pentru plimbări și activități în aer liber",
+      points: 70,
+      distance: "0 km",
+      completed: false,
       lat: 44.4706,
-      lng: 26.0784
+      lng: 26.0784,
+      image: "parcul-herastrau.jpg",
+      category: "Parc"
+    },
+    {
+      id: 8,
+      title: "Muzeul Satului",
+      description: "Muzeu în aer liber ce prezintă arhitectura tradițională românească",
+      points: 110,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4722,
+      lng: 26.0744,
+      image: "muzeul-satului.jpg",
+      category: "Muzeu"
+    },
+    {
+      id: 9,
+      title: "Cișmigiu",
+      description: "Cel mai vechi parc public din București, cu grădini frumoase și lac",
+      points: 60,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4353,
+      lng: 26.0894,
+      image: "cismigiu.jpg",
+      category: "Parc"
+    },
+    {
+      id: 10,
+      title: "Centrul Vechi",
+      description: "Zona istorică a Bucureștiului, cu străzi pietonale și arhitectură deosebită",
+      points: 130,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4323,
+      lng: 26.1012,
+      image: "centrul-vechi.jpg",
+      category: "Clădire"
+    },
+    {
+      id: 11,
+      title: "Biserica Stavropoleos",
+      description: "Biserică în stil brâncovenesc cu o arhitectură unică",
+      points: 85,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4314,
+      lng: 26.0986,
+      image: "biserica-stavropoleos.jpg",
+      category: "Clădire"
+    },
+    {
+      id: 12,
+      title: "Muzeul George Enescu",
+      description: "Dedicat marelui compozitor român, găzduit într-un palat Art Nouveau",
+      points: 95,
+      distance: "0 km",
+      completed: false,
+      lat: 44.4397,
+      lng: 26.0977,
+      image: "muzeul-enescu.jpg",
+      category: "Muzeu"
     }
   ]);
+  
 
   const observerTarget = useRef(null);
   const [hasMore, setHasMore] = useState(true);
@@ -340,42 +465,70 @@ const ExploreTab = () => {
 
 const LocationCard = ({ id, title, description, points, distance, completed, onComplete }) => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // Noua stare pentru popup
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition">
-      <div className="flex justify-between items-start mb-2">
-        <h3 className="font-medium text-lg">{title}</h3>
-        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
-          {points} puncte
-        </span>
-      </div>
-      <p className="text-gray-600 text-sm mb-3">{description}</p>
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-gray-500">La {distance}</span>
-        {completed ? (
-          <span className="text-green-600 text-sm flex items-center gap-1">
-            <span className="w-2 h-2 bg-green-600 rounded-full"></span>
-            Completat
+    <div>
+      <div
+        className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
+        onClick={() => setShowPopup(true)} // Afișează popup-ul când cardul este apăsat
+      >
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="font-medium text-lg">{title}</h3>
+          <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
+            {points} puncte
           </span>
-        ) : (
-          <button 
-            onClick={() => setShowVerificationModal(true)} 
-            className="text-blue-600 text-sm hover:underline"
-            style={{backgroundColor:'#dbeafe', padding:'5px', borderRadius:'5px', }}
-          >
-            Am ajuns aici
-          </button>
-        )}
+        </div>
+        <p className="text-gray-600 text-sm mb-3">{description}</p>
+        <div className="flex justify-between items-center">
+          <span className="text-sm text-gray-500">La {distance}</span>
+          {completed ? (
+            <span className="text-green-600 text-sm flex items-center gap-1">
+              <span className="w-2 h-2 bg-green-600 rounded-full"></span>
+              Completat
+            </span>
+          ) : (
+            <button 
+              onClick={(e) => {
+                e.stopPropagation(); // Previi afișarea popup-ului pe click
+                setShowVerificationModal(true);
+              }}
+              className="text-blue-600 text-sm hover:underline"
+              style={{backgroundColor:'#dbeafe', padding:'5px', borderRadius:'5px', }}
+            >
+              Am ajuns aici
+            </button>
+          )}
+        </div>
       </div>
 
+      {/* Popup-ul cu descrierea locației */}
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h2 className="text-lg font-semibold text-center mb-4">{title}</h2>
+            <p className="text-gray-600 mb-4">{description}</p>
+            <button
+              onClick={() => setShowPopup(false)}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg w-full"
+            >
+              Închide
+            </button>
+          </div>
+        </div>
+      )}
+
       {showVerificationModal && (
-        <LocationVerificationModal onClose={() => setShowVerificationModal(false)} 
-                                    onComplete={onComplete} 
-                                    locationId={id} />
+        <LocationVerificationModal 
+          onClose={() => setShowVerificationModal(false)} 
+          onComplete={onComplete} 
+          locationId={id} 
+        />
       )}
     </div>
   );
 };
+
 
 const LocationVerificationModal = ({ onClose, onComplete, locationId }) => {
   const [code, setCode] = useState('');
