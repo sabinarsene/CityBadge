@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Mail, Lock, User, ArrowRight, EyeOff, Eye } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 import './LoginRegisterTabs.css';
 
 const LoginRegisterTabs = () => {
@@ -10,10 +13,30 @@ const LoginRegisterTabs = () => {
     password: '',
     name: ''
   });
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+
+    if (isLogin) {
+
+      navigate('/app');
+    } else {
+
+      try {
+        await addDoc(collection(db, 'users'), {
+          email: formData.email,
+          password: formData.password,
+          name: formData.name,
+        });
+        console.log('User added to Firestore:', formData);
+        
+        // După ce utilizatorul este înregistrat, redirecționează la pagina de logare
+        setIsLogin(true);
+      } catch (error) {
+        console.error('Error adding user to Firestore:', error);
+      }
+    }
   };
 
   const handleChange = (e) => {

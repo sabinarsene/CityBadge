@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Map, Navigation, Award, Compass, Shield, Landmark, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './Homepage.css';

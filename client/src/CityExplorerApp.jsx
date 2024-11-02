@@ -5,7 +5,6 @@ import './styles.css';
 const CityExplorerApp = () => {
   const [activeTab, setActiveTab] = useState('explore');
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [currentPage, setCurrentPage] = useState('home');
   
   useEffect(() => {
     const handleScroll = () => {
@@ -21,85 +20,63 @@ const CityExplorerApp = () => {
   };
 
   return (
-      <div className="min-h-screen bg-gray-100 pb-16">
-        <header className="bg-blue-600 text-white p-4 shadow-lg fixed top-0 w-full z-10">
-          <div className="container mx-auto flex justify-between items-center">
-            <h1 className="text-2xl font-bold">City Explorer</h1>
-            <div className="flex items-center gap-4">
-              <span className="flex items-center gap-2">
-                <Map size={20} />
-                <span className="font-medium">12 Places</span>
-              </span>
-              <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
-                2,450 Points
-              </span>
-            </div>
+    <div className="min-h-screen bg-gray-100 pb-16">
+      <header className="bg-blue-600 text-white p-4 shadow-lg fixed top-0 w-full z-10">
+        <div className="container mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold">City Explorer</h1>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-2">
+              <Map size={20} />
+              <span className="font-medium">12 Places</span>
+            </span>
+            <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
+              2,450 Points
+            </span>
           </div>
-        </header>
-        <main className="container mx-auto p-4 mt-20">
-          <div className="flex gap-4 mb-6 sticky top-20 bg-gray-100 z-10 p-2">
-            <button
-              onClick={() => setActiveTab('explore')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                activeTab === 'explore'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-600'
-              }`}
-            >
-              <Navigation size={20} />
-              Explorează
-            </button>
-            <button
-              onClick={() => setActiveTab('achievements')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg ${
-                activeTab === 'achievements'
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-white text-gray-600'
-              }`}
-            >
-              <Search size={20} />
-              Realizări
-            </button>
-          </div>
+        </div>
+      </header>
 
-          {/* Content Area */}
-          <div className="bg-white rounded-xl shadow-lg p-6">
-            {activeTab === 'explore' ? (
-              <ExploreTab />
-            ) : (
-              <AchievementsTab />
-            )}
-          </div>
-        </main>
+      <main className="container mx-auto p-4 mt-20">
+        {/* Content Area */}
+        <div className="bg-white rounded-xl shadow-lg p-6">
+          {activeTab === 'explore' ? (
+            <ExploreTab />
+          ) : (
+            <AchievementsTab />
+          )}
+        </div>
+      </main>
 
-        {/* Scroll to Top Button */}
-        {showScrollTop && (
-          <button
-            onClick={scrollToTop}
-            className="fixed bottom-20 right-4 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+      {/* Scroll to Top Button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-20 right-4 bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+        >
+          <ChevronUp size={24} />
+        </button>
+      )}
+
+      {/* Bottom Navigation */}
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div className="container mx-auto flex justify-center gap-16">
+          <button 
+            onClick={() => setActiveTab('explore')}
+            className={`flex flex-col items-center ${activeTab === 'explore' ? 'text-blue-600' : 'text-gray-600'}`}
           >
-            <ChevronUp size={24} />
+            <Navigation size={24} />
+            <span className="text-sm mt-1">Explorează</span>
           </button>
-        )}
-
-        {/* Bottom Navigation */}
-        <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-          <div className="container mx-auto flex justify-around">
-            <button className="flex flex-col items-center text-blue-600">
-              <Map size={24} />
-              <span className="text-sm mt-1">Hartă</span>
-            </button>
-            <button className="flex flex-col items-center text-gray-600">
-              <Navigation size={24} />
-              <span className="text-sm mt-1">Explorează</span>
-            </button>
-            <button className="flex flex-col items-center text-gray-600">
-              <Search size={24} />
-              <span className="text-sm mt-1">Realizări</span>
-            </button>
-          </div>
-        </nav>
-      </div>
+          <button 
+            onClick={() => setActiveTab('achievements')}
+            className={`flex flex-col items-center ${activeTab === 'achievements' ? 'text-blue-600' : 'text-gray-600'}`}
+          >
+            <Search size={24} />
+            <span className="text-sm mt-1">Realizări</span>
+          </button>
+        </div>
+      </nav>
+    </div>
   );
 };
 
