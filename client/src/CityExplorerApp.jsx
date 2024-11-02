@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Navigation, Search, ChevronUp, Map, User, LogOut, Home } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { db } from './firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const CityExplorerApp = () => {
   const [activeTab, setActiveTab] = useState('explore');
@@ -9,6 +11,7 @@ const CityExplorerApp = () => {
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
+ 
   useEffect(() => {
     const userEmail = localStorage.getItem('userEmail');
     if (!userEmail) {
@@ -41,7 +44,7 @@ const CityExplorerApp = () => {
     <div className="min-h-screen bg-gray-100 pb-16">
       <header className="bg-blue-600 text-white p-4 shadow-lg fixed top-0 w-full z-10">
         <div className="container mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold">City Explorer</h1>
+          <h1 className="text-2xl font-bold" onClick={() => navigate('/')}>CityBadge</h1>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-2">
               <Map size={20} />
@@ -63,11 +66,12 @@ const CityExplorerApp = () => {
                     {userData.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  <User size={20} />
+                  // <User size={20} />
+                  <img src={pfp} alt="pfp" id='app-pfp'/>
                 )}
               </button>
               {showAccountMenu && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800" style={{width:'auto'}}>
                   <div className="px-4 py-2 border-b border-gray-100">
                     <p className="font-medium">{userData?.name || 'User'}</p>
                     <p className="text-sm text-gray-500">{userData?.email}</p>
@@ -103,6 +107,7 @@ const CityExplorerApp = () => {
         </div>
       </main>
 
+      {/* Scroll to Top Button */}
       {showScrollTop && (
         <button
           onClick={scrollToTop}
@@ -134,6 +139,7 @@ const CityExplorerApp = () => {
           </button>
         </div>
       </nav>
+      {showChat && <Chatbot />}
     </div>
   );
 };

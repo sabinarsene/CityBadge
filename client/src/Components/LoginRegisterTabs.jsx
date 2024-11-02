@@ -4,6 +4,7 @@ import { Mail, Lock, User, ArrowRight, EyeOff, Eye } from 'lucide-react';
 import { db } from '../firebase';
 import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import './LoginRegisterTabs.css';
+import google from './google.png';
 
 const LoginRegisterTabs = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -195,7 +196,7 @@ const LoginRegisterTabs = () => {
                 type="button"
                 className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
               >
-                <img src="/api/placeholder/24/24" alt="Google" className="w-6 h-6" />
+                <img src={google} alt="Google" className="w-6 h-6" />
                 <span className="text-gray-600">
                   {isLogin ? 'Conectare cu Google' : 'Înregistrare cu Google'}
                 </span>

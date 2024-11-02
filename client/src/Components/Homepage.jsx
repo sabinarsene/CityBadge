@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { Map, Navigation, Award, Compass, Shield, Landmark, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import logo from './logo.png';
+import picturehome from "./picturehome.jpg";
 import './Homepage.css';
 
 const Homepage = () => {
     const navigate = useNavigate();
     return (
       <div className="min-h-screen bg-white">
-        {/* Hero Section */}
         <section className="bg-gradient-to-br from-blue-600 to-blue-800 text-white">
           <div className="container mx-auto px-4 py-16">
             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
               <div className="flex-1 space-y-6">
+                <img src={logo} alt="Logo" id='homepage-logo'/>
                 <h1 className="text-4xl md:text-5xl font-bold leading-tight">
                   Descoperă Bucureștiul într-un mod nou și captivant
                 </h1>
@@ -30,9 +32,10 @@ const Homepage = () => {
               <div className="flex-1 relative">
                 <div className="relative w-full h-64 md:h-96">
                   <img 
-                    src="/api/placeholder/600/400"
+                    src={picturehome}
                     alt="City Explorer App Preview" 
                     className="rounded-lg shadow-2xl"
+                    id="picturehome"
                   />
                   {/* Floating Achievement Card */}
                   <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-xl">
