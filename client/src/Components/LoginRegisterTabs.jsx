@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate } from 'react-router-dom';
 import { Mail, Lock, User, ArrowRight, EyeOff, Eye } from 'lucide-react';
 import { db } from '../firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, query, where } from 'firebase/firestore';
 import './LoginRegisterTabs.css';
 
 const LoginRegisterTabs = () => {
@@ -13,35 +13,73 @@ const LoginRegisterTabs = () => {
     password: '',
     name: ''
   });
+  const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  const validateForm = () => {
+    if (!formData.email.includes('@')) {
+      setError('Emailul trebuie să fie valid.');
+      return false;
+    }
+    if (formData.password.length < 6) {
+      setError('Parola trebuie să conțină cel puțin 6 caractere.');
+      return false;
+    }
+    if (!isLogin && formData.name.length < 3) {
+      setError('Numele trebuie să conțină cel puțin 3 caractere.');
+      return false;
+    }
+    setError('');
+    return true;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!validateForm()) return;
+
     if (isLogin) {
+      // Logare
+      try {
+        const userQuery = query(
+          collection(db, 'users'),
+          where('email', '==', formData.email),
+          where('password', '==', formData.password)
+        );
+        const querySnapshot = await getDocs(userQuery);
 
-      navigate('/app');
+        if (!querySnapshot.empty) {
+          navigate('/app'); // Redirecționare la CityExplorerApp după autentificare reușită
+        } else {
+          setError('Emailul sau parola sunt incorecte.');
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        setError('A apărut o eroare la autentificare.');
+      }
     } else {
-
+      // Înregistrare
       try {
         await addDoc(collection(db, 'users'), {
           email: formData.email,
           password: formData.password,
           name: formData.name,
+          punctaj: 0 // Inițializare punctaj la 0
         });
         console.log('User added to Firestore:', formData);
         
-        // După ce utilizatorul este înregistrat, redirecționează la pagina de logare
+        // După înregistrare reușită, comută la ecranul de logare
         setIsLogin(true);
       } catch (error) {
         console.error('Error adding user to Firestore:', error);
+        setError('A apărut o eroare la înregistrare.');
       }
     }
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -68,6 +106,9 @@ const LoginRegisterTabs = () => {
                 : 'Începe să explorezi orașul într-un mod nou'}
             </p>
           </div>
+
+          {/* Error Message */}
+          {error && <p className="text-red-500 text-center">{error}</p>}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="p-6 pt-0 space-y-4">

@@ -1,11 +1,45 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Map, Navigation, Search, ChevronUp, Home } from 'lucide-react';
-import './styles.css';
+import { Navigation, Search, ChevronUp, Map, User, LogOut, Home } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { db } from './firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const CityExplorerApp = () => {
   const [activeTab, setActiveTab] = useState('explore');
   const [showScrollTop, setShowScrollTop] = useState(false);
-  
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
+
+ 
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const userEmail = localStorage.getItem('userEmail');
+        
+        if (userEmail) {
+          const userQuery = query(
+            collection(db, 'users'),
+            where('email', '==', userEmail)
+          );
+          
+          const querySnapshot = await getDocs(userQuery);
+          if (!querySnapshot.empty) {
+            const userDoc = querySnapshot.docs[0].data();
+            setUserData(userDoc);
+          }
+        } else {
+          navigate('/app');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        navigate('/');
+      }
+    };
+
+    loadUserData();
+  }, [navigate]);
+
   useEffect(() => {
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 400);
@@ -15,9 +49,29 @@ const CityExplorerApp = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const handleLogout = () => {
+    localStorage.removeItem('userEmail');
+    navigate('/');
+  };
+
+  const handleHomeClick = () => {
+    navigate('/');
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!event.target.closest('.account-menu')) {
+        setShowAccountMenu(false);
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 pb-16">
@@ -30,8 +84,49 @@ const CityExplorerApp = () => {
               <span className="font-medium">12 Places</span>
             </span>
             <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
-              2,450 Points
+              {userData?.punctaj || 0} Points
             </span>
+            {/* Account Menu */}
+            <div className="relative account-menu">
+              <button 
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowAccountMenu(!showAccountMenu);
+                }}
+                className="ml-4 flex items-center justify-center w-10 h-10 rounded-full bg-blue-700 hover:bg-blue-800 transition-colors"
+              >
+                {userData?.name ? (
+                  <span className="text-sm font-medium">
+                    {userData.name.charAt(0).toUpperCase()}
+                  </span>
+                ) : (
+                  <User size={20} />
+                )}
+              </button>
+              
+              {showAccountMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 text-gray-800">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="font-medium">{userData?.name || 'User'}</p>
+                    <p className="text-sm text-gray-500">{userData?.email}</p>
+                    <p className="text-sm font-medium text-blue-600 mt-1">
+                      {userData?.punctaj || 0} puncte
+                    </p>
+                  </div>
+                  <button className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100">
+                    <User size={18} />
+                    <span>Contul meu</span>
+                  </button>
+                  <button 
+                    onClick={handleLogout}
+                    className="w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-gray-100 text-red-600"
+                  >
+                    <LogOut size={18} />
+                    <span>Deconectare</span>
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
@@ -59,7 +154,15 @@ const CityExplorerApp = () => {
 
       {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-        <div className="container mx-auto flex justify-center gap-16">
+        <div className="container mx-auto flex justify-center gap-12">
+        <button 
+            onClick={handleHomeClick}
+            className="flex flex-col items-center text-gray-600"
+          >
+            <Home size={24} />
+            <span className="text-sm mt-1">Home</span>
+          </button>
+          
           <button 
             onClick={() => setActiveTab('explore')}
             className={`flex flex-col items-center ${activeTab === 'explore' ? 'text-blue-600' : 'text-gray-600'}`}
@@ -67,6 +170,7 @@ const CityExplorerApp = () => {
             <Navigation size={24} />
             <span className="text-sm mt-1">Explorează</span>
           </button>
+
           <button 
             onClick={() => setActiveTab('achievements')}
             className={`flex flex-col items-center ${activeTab === 'achievements' ? 'text-blue-600' : 'text-gray-600'}`}
