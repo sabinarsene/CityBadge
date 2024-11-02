@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Navigation, Search, ChevronUp, Map, User, LogOut, Home, MessageCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { db } from './firebase';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { collection, query, where, getDocs, updateDoc, onSnapshot } from 'firebase/firestore';
 import pfp from './Components/pfp.png';
 import Chatbot from './Components/Chatbot';
 
@@ -14,35 +14,34 @@ const CityExplorerApp = () => {
   const navigate = useNavigate();
   const [showChat, setShowChat] = useState(false);
   const toggleChat = () => setShowChat(prev => !prev);
+  const [code, setCode] = useState('');
 
  
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const userEmail = localStorage.getItem('userEmail');
-        
-        if (userEmail) {
-          const userQuery = query(
-            collection(db, 'users'),
-            where('email', '==', userEmail)
-          );
-          
-          const querySnapshot = await getDocs(userQuery);
+    const loadUserData = () => {
+      const userEmail = localStorage.getItem('userEmail');
+  
+      if (userEmail) {
+        const userQuery = query(
+          collection(db, 'users'),
+          where('email', '==', userEmail)
+        );
+  
+        const unsubscribe = onSnapshot(userQuery, (querySnapshot) => {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0].data();
             setUserData(userDoc);
           }
-        } else {
-          navigate('/app');
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        navigate('/');
+        });
+  
+        return () => unsubscribe(); // Clean up the listener on unmount
+      } else {
+        navigate('/app');
       }
     };
-
+  
     loadUserData();
-  }, [navigate]);
+  }, [navigate]);  
 
   useEffect(() => {
     const handleScroll = () => {
@@ -280,6 +279,14 @@ const ExploreTab = () => {
     location.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleLocationComplete = (id) => {
+    setLocations(prevLocations =>
+      prevLocations.map(location =>
+        location.id === id ? { ...location, completed: true } : location
+      )
+    );
+  };
+
   return (
     <div className="space-y-6">
       <div className="relative">
@@ -304,7 +311,11 @@ const ExploreTab = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {filteredLocations.map((location) => (
-          <LocationCard key={location.id} {...location} />
+          <LocationCard 
+            key={location.id} 
+            {...location} 
+            onComplete={handleLocationComplete} // Pass the completion handler
+          />
         ))}
       </div>
 
@@ -327,7 +338,7 @@ const ExploreTab = () => {
   );
 };
 
-const LocationCard = ({ title, description, points, distance, completed }) => {
+const LocationCard = ({ id, title, description, points, distance, completed, onComplete }) => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
 
   return (
@@ -358,25 +369,49 @@ const LocationCard = ({ title, description, points, distance, completed }) => {
       </div>
 
       {showVerificationModal && (
-        <LocationVerificationModal onClose={() => setShowVerificationModal(false)} />
+        <LocationVerificationModal onClose={() => setShowVerificationModal(false)} 
+                                    onComplete={onComplete} 
+                                    locationId={id} />
       )}
     </div>
   );
 };
 
-const LocationVerificationModal = ({ onClose }) => {
+const LocationVerificationModal = ({ onClose, onComplete, locationId }) => {
   const [code, setCode] = useState('');
 
-  const handleSubmit = () => {
-    // Add validation logic for code here
-    console.log('Code submitted:', code);
-    onClose();  // Close the modal after submission
+  const handleSubmit = async () => {
+    if (code === 'qArs1') {
+      const userEmail = localStorage.getItem('userEmail');
+  
+      if (userEmail) {
+        try {
+          const userRef = query(collection(db, 'users'), where('email', '==', userEmail));
+          const userSnapshot = await getDocs(userRef);
+          
+          if (!userSnapshot.empty) {
+            const userDoc = userSnapshot.docs[0];
+            const newPoints = userDoc.data().punctaj + 100;
+  
+            await updateDoc(userDoc.ref, { punctaj: newPoints });
+            onComplete(locationId);
+            onClose();
+          }
+        } catch (error) {
+          console.error('Error updating user points:', error);
+          alert('A apărut o eroare. Vă rugăm să încercați din nou.');
+        }
+      }
+    } else {
+      alert('Cod incorect. Încercați din nou.');
+    }
   };
+  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-        <h2 className="text-lg font-semibold text-center mb-4">Introduceți Codul</h2>
+        <h2 className="text-lg font-semibold text-center mb-4">Introduceți Codul Unic</h2>
         <input
           type="text"
           placeholder="Cod"
@@ -396,6 +431,7 @@ const LocationVerificationModal = ({ onClose }) => {
     </div>
   );
 };
+
 
 const AchievementsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
