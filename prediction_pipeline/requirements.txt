@@ -1,0 +1,15 @@
+
+pandas
+numpy
+scikit-learn
+statsmodels
+matplotlib
+seaborn
+dill
+pmdarima
+scipy
+setuptools
+cmdstanpy
+pystan
+prophet 
+# -e .
