@@ -37,7 +37,6 @@ const Homepage = () => {
                     className="rounded-lg shadow-2xl"
                     id="picturehome"
                   />
-                  {/* Floating Achievement Card */}
                   <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-xl">
                     <div className="flex items-center gap-3">
                       <div className="bg-yellow-100 p-2 rounded-full">
@@ -55,7 +54,6 @@ const Homepage = () => {
           </div>
         </section>
 
-      {/* Features Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Cum funcționează?</h2>
@@ -79,7 +77,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Statistics Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-8 text-center">
@@ -91,7 +88,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Pași simpli pentru a începe</h2>
@@ -124,7 +120,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* Testimonials Section */}
       <section className="bg-gray-50 py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center mb-12">Ce spun exploratorii noștri</h2>
@@ -148,7 +143,6 @@ const Homepage = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-16">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-6">Gata să începi aventura?</h2>

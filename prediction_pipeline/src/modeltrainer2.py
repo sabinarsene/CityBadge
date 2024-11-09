@@ -26,19 +26,16 @@ class ModelTrainer:
             X_train, y_train = train_data.iloc[:, :-1], train_data.iloc[:, -1]
             X_test, y_test = test_data.iloc[:, :-1], test_data.iloc[:, -1]
 
-            # Initialize models
             models = {
-                "ARIMA": ARIMA(endog=y_train, order=(5, 1, 0)),  # Pass `y_train` as `endog`
+                "ARIMA": ARIMA(endog=y_train, order=(5, 1, 0)),
                 "SARIMA": auto_arima,
                 "HoltWinters": ExponentialSmoothing(y_train, trend="add", seasonal="add", seasonal_periods=12)
             }
 
-            # Train the ARIMA model
             logging.info("Fitting ARIMA model")
             arima_model = models["ARIMA"].fit()
             models["ARIMA"] = arima_model
 
-            # Fit the Prophet model
             logging.info("Fitting Prophet model")
             prophet_model = Prophet()
             prophet_train_df = pd.DataFrame({
@@ -47,7 +44,6 @@ class ModelTrainer:
             })
             prophet_model.fit(prophet_train_df)
 
-            # Prepare evaluation parameters
             params = {
                 "Prophet": {},
                 "ARIMA": {"order": [(5, 1, 0), (2, 1, 2)]},
@@ -55,17 +51,14 @@ class ModelTrainer:
                 "HoltWinters": {"trend": ["add", "mul"], "seasonal": ["add", "mul"]}
             }
 
-            # Evaluate models and determine the best one
             model_report = evaluate_models(X_train, y_train, X_test, y_test, models, params)
             best_model_name = max(model_report, key=model_report.get)
             best_model_score = model_report[best_model_name]
 
             logging.info(f"Best model found: {best_model_name} with R2 score: {best_model_score}")
 
-            # Get the best model instance
             best_model = models[best_model_name]
 
-            # Save the best model
             save_object(
                 file_path=self.model_trainer_config.trained_model_path,
                 obj=best_model

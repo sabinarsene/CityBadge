@@ -2,7 +2,6 @@ import os
 import sys
 import numpy as np
 import pandas as pd
-# import dill
 import pickle
 from exception import CustomException
 from sklearn.metrics import r2_score
@@ -30,11 +29,9 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param):
                 logging.info(f"Evaluating model: {model_name}")
 
                 if hasattr(model, 'fit') and hasattr(model, 'predict'):
-                    # Fit model and predict
                     model.fit(X_train, y_train)
                     y_pred = model.predict(X_test)
 
-                    # Calculate score
                     score = r2_score(y_test, y_pred)
                     report[model_name] = score
                     logging.info(f"{model_name} scored {score:.4f}")
@@ -44,8 +41,7 @@ def evaluate_models(X_train, y_train, X_test, y_test, models, param):
                     
             except Exception as model_error:
                 logging.error(f"Failed to evaluate {model_name}: {model_error}")
-                continue  # Continue with the next model
-
+                continue
         if not report:
             raise CustomException("No models were successfully evaluated.", sys)
 

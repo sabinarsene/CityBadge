@@ -98,7 +98,7 @@ class DataPipeline:
                 model_path = os.path.join(self.artifacts_dir, f"best_model_{i}.pkl")
                 if os.path.exists(model_path):
                     best_model = load_object(model_path)
-                    X_future = np.arange(len(test_data), len(test_data) + 12).reshape(-1, 1)  # 12 future points
+                    X_future = np.arange(len(test_data), len(test_data) + 12).reshape(-1, 1)
                     prediction = best_model.predict(X_future)
                     predictions[column] = prediction.tolist()
                     logging.info(f"Prediction for {column}: {prediction}")
@@ -113,14 +113,11 @@ class DataPipeline:
 if __name__ == "__main__":
     pipeline = DataPipeline()
 
-    # Step 1: Data Ingestion
-    dataset_path = r"D:\CityBadge\prediction_pipeline\dataset\spots_searches_dataset.csv"
+    dataset_path = r"PATH"
     train_data, test_data = pipeline.initiate_data_ingestion(dataset_path)
 
-    # Step 2: Train models
     model_metadata = pipeline.train_models(train_data, test_data)
     print("Model training completed. Metadata:", model_metadata)
 
-    # Step 3: Generate predictions
     predictions = pipeline.generate_prediction(test_data)
     print("Generated predictions for each feature:", predictions)

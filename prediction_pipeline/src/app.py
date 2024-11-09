@@ -12,7 +12,7 @@ pipeline = DataPipeline()
 
 @app.route('/')
 def index():
-    dataset_path = r"D:\CityBadge\prediction_pipeline\dataset\spots_searches_dataset.csv"
+    dataset_path = r"PATH"
     _, test_data = pipeline.initiate_data_ingestion(dataset_path)
     predictions = pipeline.generate_prediction(test_data)
 

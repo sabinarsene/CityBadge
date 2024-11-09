@@ -28,7 +28,7 @@ const Chatbot = () => {
         },
         {
           headers: {
-            Authorization: `Bearer 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`,
+            Authorization: `Authorization`,
           },
         }
       );

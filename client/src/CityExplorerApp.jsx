@@ -30,11 +30,11 @@ const CityExplorerApp = () => {
           if (!querySnapshot.empty) {
             const userDoc = querySnapshot.docs[0].data();
             setUserData(userDoc);
-            setFavorites(userDoc.favorites || []); // Load favorites from user data
+            setFavorites(userDoc.favorites || []);
           }
         });
   
-        return () => unsubscribe(); // Clean up the listener on unmount
+        return () => unsubscribe();
       } else {
         navigate('/app');
       }
@@ -68,10 +68,8 @@ const CityExplorerApp = () => {
   const toggleFavorite = (placeId) => {
     setFavorites((prevFavorites) => {
       if (prevFavorites.includes(placeId)) {
-        // Remove from favorites
         return prevFavorites.filter(id => id !== placeId);
       } else {
-        // Add to favorites
         return [...prevFavorites, placeId];
       }
     });
@@ -101,7 +99,6 @@ const CityExplorerApp = () => {
             <span className="bg-yellow-400 text-blue-900 px-3 py-1 rounded-full font-medium">
               {userData?.punctaj || 0} Points
             </span>
-            {/* Account Menu */}
             <div className="relative account-menu">
               <button 
                 onClick={(e) => {
@@ -147,7 +144,6 @@ const CityExplorerApp = () => {
       </header>
 
       <main className="container mx-auto p-4 mt-20">
-        {/* Content Area */}
         <div className="bg-white rounded-xl shadow-lg p-6">
           {activeTab === 'explore' ? (
             <ExploreTab toggleFavorite={toggleFavorite} favorites={favorites} />
@@ -168,17 +164,15 @@ const CityExplorerApp = () => {
           </button>
         )}
         
-        {/* Chat Button */}
         <button
           onClick={toggleChat}
           className="bg-blue-600 text-white p-2 rounded-full shadow-lg hover:bg-blue-700 transition-colors"
           style={{ bottom: '130px', right: '160px' }}
         >
-          <MessageCircle size={24} /> {/* Lucide-react icon for chat */}
+          <MessageCircle size={24} />
         </button>
       </div>
 
-      {/* Bottom Navigation */}
       <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
         <div className="container mx-auto flex justify-center gap-12">
           <button 
@@ -205,9 +199,8 @@ const CityExplorerApp = () => {
             <span className="text-sm mt-1">Realizări</span>
           </button>
 
-          {/* Favorites Button */}
           <button 
-            onClick={() => navigate('/favorites')} // Navigate to the favorites page
+            onClick={() => navigate('/favorites')}
             className="flex flex-col items-center text-gray-600"
           >
             <Star size={24} />
@@ -459,7 +452,7 @@ const ExploreTab = () => {
           <LocationCard 
             key={location.id} 
             {...location} 
-            onComplete={handleLocationComplete} // Pass the completion handler
+            onComplete={handleLocationComplete}
           />
         ))}
       </div>
@@ -485,33 +478,33 @@ const ExploreTab = () => {
 
 const LocationCard = ({ id, title, description, points, distance, completed, onComplete, isFavorite, onToggleFavorite }) => {
   const [showVerificationModal, setShowVerificationModal] = useState(false);
-  const [showPopup, setShowPopup] = useState(false); // State for popup
+  const [showPopup, setShowPopup] = useState(false);
 
   return (
     <div>
       <div
         className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition"
-        onClick={() => setShowPopup(true)} // Show popup when card is clicked
+        onClick={() => setShowPopup(true)}
       >
-        <div className="flex justify-between items-center mb-2"> {/* Use items-center for better alignment */}
+        <div className="flex justify-between items-center mb-2">
           <h3 className="font-medium text-lg">{title}</h3>
   
-          <div className="flex items-center"> {/* Container for points and favorite icon */}
-            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm mr-2"> {/* Margin for spacing */}
+          <div className="flex items-center">
+            <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm mr-2">
               {points} puncte
             </span>
   
             <button 
               onClick={(e) => {
-                e.stopPropagation(); // Prevent popup from showing when clicking the favorite button
-                onToggleFavorite(id); // Toggle favorite status
+                e.stopPropagation();
+                onToggleFavorite(id);
               }}
               className="focus:outline-none"
             >
               {isFavorite ? (
-                <Star size={24} className="text-yellow-500" /> // Use the filled star
+                <Star size={24} className="text-yellow-500" />
               ) : (
-                <Star size={24} className="text-gray-400" style={{ fill: 'none', stroke: 'currentColor' }} /> // Outline style
+                <Star size={24} className="text-gray-400" style={{ fill: 'none', stroke: 'currentColor' }} />
               )}
             </button>
           </div>
@@ -528,7 +521,7 @@ const LocationCard = ({ id, title, description, points, distance, completed, onC
           ) : (
             <button 
               onClick={(e) => {
-                e.stopPropagation(); // Prevent popup from showing on click
+                e.stopPropagation();
                 setShowVerificationModal(true);
               }}
               className="text-blue-600 text-sm hover:underline"
@@ -540,7 +533,6 @@ const LocationCard = ({ id, title, description, points, distance, completed, onC
         </div>
       </div>
   
-      {/* Popup for location description */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80">
@@ -567,7 +559,6 @@ const LocationCard = ({ id, title, description, points, distance, completed, onC
   );
   
 };
-
 
 const LocationVerificationModal = ({ onClose, onComplete, locationId }) => {
   const [code, setCode] = useState('');
@@ -598,7 +589,6 @@ const LocationVerificationModal = ({ onClose, onComplete, locationId }) => {
       alert('Cod incorect. Încercați din nou.');
     }
   };
-  
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -623,8 +613,6 @@ const LocationVerificationModal = ({ onClose, onComplete, locationId }) => {
     </div>
   );
 };
-
-
 
 const AchievementsTab = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -664,7 +652,7 @@ const AchievementsTab = () => {
         { store: 'Restaurantul Gourmet', discount: '25% reducere la prânz', icon: <Star size={16} className="text-yellow-500" /> },
         { store: 'Bistro Local', discount: '10% reducere la cină', icon: <Ticket size={16} className="text-blue-600" /> },
       ]
-    } // New achievement
+    }
   ];
 
   const filteredAchievements = achievements.filter(achievement =>

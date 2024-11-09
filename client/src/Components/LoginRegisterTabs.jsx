@@ -40,7 +40,6 @@ const LoginRegisterTabs = () => {
     if (!validateForm()) return;
   
     if (isLogin) {
-      // Login
       try {
         const userQuery = query(
           collection(db, 'users'),
@@ -50,9 +49,8 @@ const LoginRegisterTabs = () => {
         const querySnapshot = await getDocs(userQuery);
   
         if (!querySnapshot.empty) {
-          // Save email to localStorage on successful login
           localStorage.setItem('userEmail', formData.email);
-          navigate('/app'); // Redirect to CityExplorerApp after successful login
+          navigate('/app');
         } else {
           setError('Emailul sau parola sunt incorecte.');
         }
@@ -61,17 +59,15 @@ const LoginRegisterTabs = () => {
         setError('A apărut o eroare la autentificare.');
       }
     } else {
-      // Registration
       try {
         await addDoc(collection(db, 'users'), {
           email: formData.email,
           password: formData.password,
           name: formData.name,
-          punctaj: 0 // Initialize points to 0
+          punctaj: 0
         });
         console.log('User added to Firestore:', formData);
   
-        // Switch to login screen after successful registration
         setIsLogin(true);
       } catch (error) {
         console.error('Error adding user to Firestore:', error);
@@ -92,9 +88,7 @@ const LoginRegisterTabs = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Card Container */}
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Header */}
           <div className="p-6 text-center">
             <div className="mb-4">
               <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
@@ -111,10 +105,8 @@ const LoginRegisterTabs = () => {
             </p>
           </div>
 
-          {/* Error Message */}
           {error && <p className="text-red-500 text-center">{error}</p>}
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="p-6 pt-0 space-y-4">
             {!isLogin && (
               <div className="relative">
@@ -180,7 +172,6 @@ const LoginRegisterTabs = () => {
               <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
             </button>
 
-            {/* Divider */}
             <div className="relative my-6">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-gray-200"></div>
@@ -190,7 +181,6 @@ const LoginRegisterTabs = () => {
               </div>
             </div>
 
-            {/* Social Login Buttons */}
             <div className="space-y-3">
               <button
                 type="button"
@@ -204,7 +194,6 @@ const LoginRegisterTabs = () => {
             </div>
           </form>
 
-          {/* Footer */}
           <div className="p-6 bg-gray-50 text-center">
             <p className="text-gray-600">
               {isLogin ? 'Nu ai cont?' : 'Ai deja cont?'}
@@ -218,7 +207,6 @@ const LoginRegisterTabs = () => {
           </div>
         </div>
 
-        {/* Terms and Privacy */}
         <p className="mt-8 text-center text-sm text-white/80">
           Continuând, ești de acord cu{' '}
           <a href="#" className="text-white hover:underline">
