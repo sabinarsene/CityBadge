@@ -80,7 +80,9 @@ pip install flask, matplotlib, pandas, scikit-learn
 </pre>
 
 <h2 id="usage" style="color: #4A90E2;">🚀 Usage</h2>
-<p>To start using the project, run:</p>
+<p>To start using the project:</p>
+<p>Add valid credentials inside client/CityExplorerApp.jsx (Google Maps API key), client/firebase.js (Firebase database), and client/Components/Chatbot.jsx (OpenAI API key).</p>
+<p>Then run:</p>
 
 <p>First terminal (for the client):</p>
 
