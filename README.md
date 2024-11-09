@@ -57,6 +57,10 @@
     <img src="https://img.icons8.com/color/48/000000/css3.png" width="24" alt="CSS Icon" />
     CSS
   </li>
+  <li>
+    <img src="https://static.vecteezy.com/system/resources/previews/022/227/364/non_2x/openai-chatgpt-logo-icon-free-png.png" width="24" alt="OpenAI Icon" />
+    OpenAI's API
+  </li>
 </ul>
 
 <h2 id="requirements" style="color: #4A90E2;">⚠️ Requirements</h2>
