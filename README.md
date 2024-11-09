@@ -1,6 +1,6 @@
 <h1 style="color: #4A90E2; border-bottom: 2px solid #4A90E2;">CityBadge</h1>
 
-<h3 style="color: #555;">Smart city guide.</h3>
+<h3 style="color: #555;">Smart city guide. 2024 ITFest Electronic Arts Hackathon.</h3>
 
 <p align="center">
   <img src="https://i.imgur.com/TfTzdr0.png" width="300" alt="CityBadge Logo">
