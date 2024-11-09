@@ -438,11 +438,10 @@ const ExploreTab = () => {
         <Search className="absolute left-3 top-3 text-gray-400" size={20} />
       </div>
 
-      {/* Simplified Map View */}
       <div className="rounded-lg overflow-hidden shadow-lg h-96">
         <iframe
           className="w-full h-full border-0"
-          src={`https://www.google.com/maps/embed/v1/view?key=AIzaSyAafCA_cyy5BqxBmBiGaDFombVTgWWvoNk&center=44.4268,26.1025&zoom=13`}
+          src={`https://www.google.com/maps/embed/v1/view?key={Google Maps API key}&center=44.4268,26.1025&zoom=13`}
           allowFullScreen
         ></iframe>
       </div>
@@ -735,7 +734,7 @@ const RewardModal = ({ achievement, onClose }) => {
         <ul className="mt-2 space-y-1">
           {achievement.coupons.map((coupon, index) => (
             <li key={index} className="flex items-center text-gray-600">
-              {coupon.icon} {/* Icon displayed here */}
+              {coupon.icon}
               <span className="ml-2">{coupon.store}: {coupon.discount}</span>
             </li>
           ))}
