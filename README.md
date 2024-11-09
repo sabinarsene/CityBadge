@@ -3,7 +3,7 @@
 <h3 style="color: #555;">Smart city guide.</h3>
 
 <p align="center">
-  <img src="https://i.imgur.com/TfTzdr0.png" width="500" alt="CityBadge Logo">
+  <img src="https://i.imgur.com/TfTzdr0.png" width="300" alt="CityBadge Logo">
 </p>
 
 <p align="center">
